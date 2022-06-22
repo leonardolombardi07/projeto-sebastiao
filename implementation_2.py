@@ -6,7 +6,6 @@ from random import random
 from math import floor
 from constants import NUM_OF_COLUMNS, NUM_OF_ROWS, NODE_SIZE
 from models import Basket, Bush, Dock, Grass, Harve, Stone, Tree
-from utils import is_equal
 
 
 def create_docks(upper_dock_coords, lower_dock_coords,  win):
