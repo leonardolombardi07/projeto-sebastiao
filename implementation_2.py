@@ -144,3 +144,6 @@ def implementation_2():
         for i, destination in enumerate(destinations):
             path, basket = paths[i], baskets[i]
             catch_basket(origin, destination, path, basket)
+
+        win.close()
+        break

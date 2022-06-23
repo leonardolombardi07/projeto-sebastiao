@@ -30,14 +30,12 @@ def menu():
 
         if 30 < click_x < 70:
             if 75 < click_y < 75+10:
-                win.close()
                 implementation_1()
-                break
+                continue
 
             if 55 < click_y < 55+10:
-                win.close()
                 implementation_2()
-                break
+                continue
 
 
 menu()

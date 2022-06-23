@@ -68,6 +68,7 @@ def implementation_1():
     nonwalkable_nodes = grid.get_nonwalkable_nodes()
     while True:
         click = win.getMouse()
+
         destination = (floor(click.getX()), floor(click.getY()))
         if destination in [*nonwalkable_nodes, upper_dock_coords, lower_dock_coords]:
             continue
@@ -88,3 +89,6 @@ def implementation_1():
             if coords == origin:
                 break
             sleep(0.2)
+
+        win.close()
+        break
