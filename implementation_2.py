@@ -9,15 +9,13 @@ from models import Basket, Bush, Dock, Grass, Harve, Stone, Tree
 
 
 def create_docks(upper_dock_coords, lower_dock_coords,  win):
-    width_in_num_of_nodes = 1
-
-    end_upper_coords = [upper_dock_coords[0]+width_in_num_of_nodes,
-                        upper_dock_coords[1]+width_in_num_of_nodes]
+    end_upper_coords = [upper_dock_coords[0]+1,
+                        upper_dock_coords[1]+1]
     upper_dock = Dock(upper_dock_coords, end_upper_coords)
     upper_dock.draw(win)
 
-    end_lower_coords = [lower_dock_coords[0]+width_in_num_of_nodes,
-                        lower_dock_coords[1]+width_in_num_of_nodes]
+    end_lower_coords = [lower_dock_coords[0]+1,
+                        lower_dock_coords[1]+1]
     lower_dock = Dock(lower_dock_coords, end_lower_coords)
     lower_dock.draw(win)
 
@@ -56,9 +54,8 @@ def create_obstacles(grid, win):
 
 
 def create_robot(coords, win):
-    width_in_num_of_nodes = 1
-    end_coords = [coords[0]+width_in_num_of_nodes,
-                  coords[1]+width_in_num_of_nodes]
+    end_coords = [coords[0]+1,
+                  coords[1]+1]
     harve = Harve(coords, end_coords)
     harve.draw(win)
     return harve
@@ -66,30 +63,9 @@ def create_robot(coords, win):
 
 def create_basket(coords, win):
     # Note: Not sure if this works with integer number of nodes
-    radius_in_num_of_nodes = 1/2
-    basket = Basket(coords, radius_in_num_of_nodes)
+    basket = Basket(coords, 1/2)
     basket.draw(win)
     return basket
-
-
-def draw_grid(grid, win):
-    for row in grid.nodes:
-        for node in row:
-            x, y = node.x, node.y
-            rec = Rectangle(Point(x, y), Point(x+1, y+1))
-            rec.setOutline("black")
-            rec.draw(win)
-
-
-def gridnodes_to_maze(nodes):
-    maze = []
-    for i in range(len(nodes)):
-        maze.append([])
-        node_row = nodes[i]
-        for node in node_row:
-            number = 0 if node.walkable == True else 1
-            maze[i].append(number)
-    return maze
 
 
 def implementation_2():
@@ -97,9 +73,7 @@ def implementation_2():
     win = GraphWin("Implementação 2", NUM_OF_COLUMNS *
                    NODE_SIZE, NUM_OF_ROWS*NODE_SIZE)
     win.setCoords(0, 0, NUM_OF_COLUMNS, NUM_OF_ROWS)
-
-    # For development purposes only
-    draw_grid(grid, win)
+    grid.draw(win)
 
     upper_dock_coords, lower_dock_coords = (
         0, 0), (NUM_OF_COLUMNS-1, NUM_OF_ROWS-1)
@@ -113,8 +87,8 @@ def implementation_2():
         click = win.getMouse()
         destination = (floor(click.getX()), floor(click.getY()))
         basket = create_basket(destination, win)
-        maze = gridnodes_to_maze(grid.nodes)
-        path_to_basket = find_path(maze, origin, destination)
+        nonwalkable_nodes = grid.get_nonwalkable_nodes()
+        path_to_basket = find_path(nonwalkable_nodes, origin, destination)
         for coords in path_to_basket:
             robot.move_to(coords)
             if coords == destination:
@@ -122,16 +96,14 @@ def implementation_2():
                 basket.undraw()
                 robot.decrease_battery()
                 break
-
             sleep(0.2)
 
-        path_to_origin = find_path(maze, destination, origin)
+        path_to_origin = list(reversed(path_to_basket))
         for coords in path_to_origin:
             robot.move_to(coords)
             if coords == origin:
                 robot.recharge_battery()
                 break
-
             sleep(0.2)
 
 
