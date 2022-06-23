@@ -65,11 +65,14 @@ def implementation_1():
     origin = upper_dock_coords if random() > 0.5 else lower_dock_coords
     robot = create_robot(origin, win)
 
+    nonwalkable_nodes = grid.get_nonwalkable_nodes()
     while True:
         click = win.getMouse()
         destination = (floor(click.getX()), floor(click.getY()))
+        if destination in [*nonwalkable_nodes, upper_dock_coords, lower_dock_coords]:
+            continue
+
         basket = create_basket(destination, win)
-        nonwalkable_nodes = grid.get_nonwalkable_nodes()
         path_to_basket = find_path(nonwalkable_nodes, origin, destination)
         for coords in path_to_basket:
             robot.move_to(coords)
@@ -85,6 +88,3 @@ def implementation_1():
             if coords == origin:
                 break
             sleep(0.2)
-
-
-implementation_1()

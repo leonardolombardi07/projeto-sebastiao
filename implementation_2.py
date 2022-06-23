@@ -72,6 +72,14 @@ def create_basket(coords, win):
     return basket
 
 
+def create_text_instruction(win):
+    text = "Click anywhere on the window to create a basket and press enter for the robot to catch all the baskets"
+    text_object = Text(Point(5.5, 3.5), text)
+    text_object.setSize(10)
+    text_object.draw(win)
+    return text_object
+
+
 def implementation_2():
     grid = Grid(NUM_OF_COLUMNS, NUM_OF_ROWS)
     win = GraphWin("Implementação 2", NUM_OF_COLUMNS *
@@ -83,16 +91,12 @@ def implementation_2():
         0, 0), (NUM_OF_COLUMNS-1, NUM_OF_ROWS-1)
     create_docks(upper_dock_coords, lower_dock_coords, win)
     create_obstacles(grid, win)
+    text_instruction = create_text_instruction(win)
 
     origin = upper_dock_coords if random() > 0.5 else lower_dock_coords
     robot = create_robot(origin, win)
 
-    while True:
-        click = win.getMouse()
-        destination = (floor(click.getX()), floor(click.getY()))
-        basket = create_basket(destination, win)
-        nonwalkable_nodes = grid.get_nonwalkable_nodes()
-        path_to_basket = find_path(nonwalkable_nodes, origin, destination)
+    def catch_basket(origin, destination, path_to_basket, basket):
         for coords in path_to_basket:
             robot.move_to(coords)
             if coords == destination:
@@ -110,5 +114,33 @@ def implementation_2():
                 break
             sleep(0.2)
 
+    while True:
+        paths, baskets, destinations = [], [], []
+        nonwalkable_nodes = grid.get_nonwalkable_nodes()
 
-implementation_2()
+        while True:
+            key = win.checkKey()
+            click = win.checkMouse()
+
+            if key == "Return":
+                break
+
+            if click == None:
+                continue
+
+            destination = (floor(click.getX()), floor(click.getY()))
+            if destination in [*nonwalkable_nodes, upper_dock_coords, lower_dock_coords]:
+                continue
+
+            text_instruction.undraw()
+            destinations.append(destination)
+
+            basket = create_basket(destination, win)
+            baskets.append(basket)
+
+            path_to_basket = find_path(nonwalkable_nodes, origin, destination)
+            paths.append(path_to_basket)
+
+        for i, destination in enumerate(destinations):
+            path, basket = paths[i], baskets[i]
+            catch_basket(origin, destination, path, basket)
