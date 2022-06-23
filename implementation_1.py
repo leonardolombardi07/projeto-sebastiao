@@ -1,11 +1,15 @@
 from graphics import *
-from Grid import Grid
-from find_path import find_path
+
 from time import sleep
-from random import random
 from math import floor
+from random import random
+
 from constants import NUM_OF_COLUMNS, NUM_OF_ROWS, NODE_SIZE
-from models import Basket, Dock, Harve, Tree
+from find_path import find_path
+
+from models.Shapes import Basket, Dock, Tree
+from models.Harve import Harve
+from models.Grid import Grid
 
 
 def create_docks(upper_dock_coords, lower_dock_coords,  win):
